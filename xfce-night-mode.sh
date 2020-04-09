@@ -1,23 +1,24 @@
 #!/bin/bash
 
+TEXT='<span size="xx-large">&#x262F;</span>'
+SUNRISE='8:00'
+SUNSET='18:00'
+
 function show_usage()
 {
   progname=`basename "$0"`
-  echo "$progname [night|day|toggle] (defaults to 'toggle')"
-  echo "$progname SUNRISE SUNSET (e.g. '8:00 18:00')"
+  echo "$progname [night|day|toggle]"
+  echo "Without parameters it will set dark theme from $SUNSET to $SUNRISE"
 }
 
 function parse_args()
 {
   case $# in
     0)
-      echo 'toggle'
+      _get_mode_by_time
       ;;
     1)
       echo "$1"
-      ;;
-    2)
-      _get_mode_by_time "$1" "$2"
       ;;
     *)
       exit 1
@@ -27,10 +28,8 @@ function parse_args()
 function _get_mode_by_time()
 {
   now=`date +"%H%M"`
-  sunrise="${1/:/}"
-  sunset="${2/:/}"
 
-  if [ $now -ge $sunrise -a $now -le $sunset ]; then
+  if [ $now -ge "${SUNRISE/:/}" -a $now -le "${SUNSET/:/}" ]; then
     echo 'day'
   else
     echo 'night'
@@ -41,7 +40,7 @@ function set_night_mode()
 {
   current_theme=`xfconf-query -c $2 -p $3`
   if ( _is_mode_already_set "$current_theme" "$1" ); then
-    exit 0
+    return
   fi
 
   new_theme=`_set_$1 "$current_theme" 2> /dev/null`
@@ -106,3 +105,7 @@ set_night_mode $mode xsettings /Net/IconThemeName
 
 # Window manager theme
 # set_night_mode $mode xfwm4 /general/theme
+
+echo "<txt>$TEXT</txt>"
+echo "<txtclick>$0 toggle</txtclick>"
+echo "<tool>Night mode: $SUNSET - $SUNRISE</tool>"
