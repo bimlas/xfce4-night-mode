@@ -100,7 +100,7 @@ function get_config()
 }
 
 TEXT=`get_config 'text' 'string' '<span size="xx-large">&#x262F;</span>'`
-SUNRISE=`get_config 'sunrise' 'string' '8:00'`
+SUNRISE=`get_config 'sunrise' 'string' '7:30'`
 SUNSET=`get_config 'sunset' 'string' '18:00'`
 
 mode=`parse_args $@`
