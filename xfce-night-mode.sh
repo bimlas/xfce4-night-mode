@@ -1,14 +1,11 @@
 #!/bin/bash
 
-TEXT='<span size="xx-large">&#x262F;</span>'
-SUNRISE='8:00'
-SUNSET='18:00'
-
 function show_usage()
 {
   progname=`basename "$0"`
   echo "$progname [night|day|toggle]"
   echo "Without parameters it will set dark theme from $SUNSET to $SUNRISE"
+  echo 'Use `xfce4-settings-editor` -> `bimlas/night-mode` to modify settings'
 }
 
 function parse_args()
@@ -38,7 +35,7 @@ function _get_mode_by_time()
 
 function set_night_mode()
 {
-  current_theme=`xfconf-query -c $2 -p $3`
+  current_theme=`xfconf-query --channel $2 --property $3`
   if ( _is_mode_already_set "$current_theme" "$1" ); then
     return
   fi
@@ -49,7 +46,7 @@ function set_night_mode()
     exit 1
   fi
 
-  xfconf-query -c $2 -p $3 -s "$new_theme"
+  xfconf-query --channel $2 --property $3 --set "$new_theme"
 }
 
 function _is_mode_already_set()
@@ -91,6 +88,21 @@ function _set_night()
   fi
 }
 
+function get_config()
+{
+  result=`xfconf-query --channel 'bimlas' --property "/night-mode/$1" 2> /dev/null`
+  if ! [ "$result" ]; then
+    result="$3"
+    xfconf-query --channel 'bimlas' --property "/night-mode/$1" --set "$result" --create --type "$2"
+  fi
+
+  echo "$result"
+}
+
+TEXT=`get_config 'text' 'string' '<span size="xx-large">&#x262F;</span>'`
+SUNRISE=`get_config 'sunrise' 'string' '8:00'`
+SUNSET=`get_config 'sunset' 'string' '18:00'`
+
 mode=`parse_args $@`
 if [ $? != 0 ]; then
   show_usage
@@ -108,4 +120,8 @@ set_night_mode $mode xsettings /Net/IconThemeName
 
 echo "<txt>$TEXT</txt>"
 echo "<txtclick>$0 toggle</txtclick>"
-echo "<tool>Night mode: $SUNSET - $SUNRISE</tool>"
+echo "<tool>
+  Night mode: $SUNSET - $SUNRISE
+  Click to toggle mode for a while
+  Use \`xfce4-settings-editor\` -> \`bimlas/night-mode\` to modify settings
+  </tool>"
