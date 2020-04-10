@@ -5,7 +5,7 @@ function show_usage()
   progname=`basename "$0"`
   echo "$progname [night|day|toggle]"
   echo "Without parameters it will set dark theme from $SUNSET to $SUNRISE"
-  echo 'Use `xfce4-settings-editor` -> `bimlas/night-mode` to modify settings'
+  echo 'Use `xfce4-settings-editor` -> `night-mode` to modify settings'
 }
 
 function parse_args()
@@ -90,10 +90,10 @@ function _set_night()
 
 function get_config()
 {
-  result=`xfconf-query --channel 'bimlas' --property "/night-mode/$1" 2> /dev/null`
+  result=`xfconf-query --channel 'night-mode' --property "/$1" 2> /dev/null`
   if ! [ "$result" ]; then
     result="$3"
-    xfconf-query --channel 'bimlas' --property "/night-mode/$1" --set "$result" --create --type "$2"
+    xfconf-query --channel 'night-mode' --property "/$1" --set "$result" --create --type "$2"
   fi
 
   echo "$result"
@@ -123,5 +123,5 @@ echo "<txtclick>$0 toggle</txtclick>"
 echo "<tool>
   Night mode: $SUNSET - $SUNRISE
   Click to toggle mode for a while
-  Use \`xfce4-settings-editor\` -> \`bimlas/night-mode\` to modify settings
+  Use \`xfce4-settings-editor\` -> \`night-mode\` to modify settings
   </tool>"
