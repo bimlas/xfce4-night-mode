@@ -1,11 +1,11 @@
 = XFCE Night Mode
 
 Shell script that allows you to easily *switch between dark and light variants
-of a theme*. When used as a
+of the currently used themes*. When used as a
 https://docs.xfce.org/panel-plugins/xfce4-genmon-plugin[Generic Monitor
 (Genmon)] plugin, it will automatically switch at the times specified.
 
-video::https://i.imgur.com/hnPtVPr.mp4[width=400]
+image::https://i.imgur.com/UVSz6QB.gif[]
 
 It is *important that both the color scheme and the icon theme have both light
 and dark variants*. For example, the Adwaita and Adwaita-dark GTK style and
