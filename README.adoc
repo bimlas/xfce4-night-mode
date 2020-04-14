@@ -45,3 +45,10 @@ to the settings (see later).
 == Settings
 
 For settings, open the XFCE Settings Editor -> `night-mode` channel.
+
+=== Switch at a time specified by antoher program
+
+For example, to use http://jonls.dk/redshift/[Redshift] or another program to
+determine when it is night, use `xfce4-night-mode-redshift.sh` (or a modified
+version of it) instad of `xfce4-night-mode.sh` in "Generic Monitor plugin
+usage".
