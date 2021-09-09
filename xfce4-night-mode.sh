@@ -40,25 +40,26 @@ function _get_mode_by_time()
 function set_night_mode()
 {
   current_theme=`xfconf-query --channel $2 --property $3`
-  if ( _is_mode_already_set "$current_theme" "$1" ); then
+  if ( _is_mode_already_set "$current_theme" "$1" "$4" ); then
     return
   fi
 
-  new_theme=`_set_$1 "$current_theme" 2> /dev/null`
+  new_theme=`_set_$1 "$current_theme" "$4" 2> /dev/null`
   if [ $? != 0 ]; then
     show_usage
     exit 1
   fi
 
+  echo $new_theme
   xfconf-query --channel $2 --property $3 --set "$new_theme"
 }
 
 function _is_mode_already_set()
 {
-  if ( _is_dark "$1" ) && [ "$2" = "night" ]; then
+  if ( _is_dark "$1" "$3" ) && [ "$2" = "night" ]; then
     exit 0
   fi
-  if ! ( _is_dark "$1" ) && [ "$2" = "day" ]; then
+  if ! ( _is_dark "$1" "$3" ) && [ "$2" = "day" ]; then
     exit 0
   fi
   exit 1
@@ -66,29 +67,29 @@ function _is_mode_already_set()
 
 function _set_toggle()
 {
-  if ( _is_dark "$1" ); then
-    _set_day "$1"
+  if ( _is_dark "$1" "$2" ); then
+    _set_day "$1" "$2"
   else
-    _set_night "$1"
+    _set_night "$1" "$2"
   fi
 }
 
 function _is_dark()
 {
-  echo "$1" | grep '\-dark$' > /dev/null
+  echo "$1" | grep "\-$2$" > /dev/null
 }
 
 function _set_day()
 {
-  echo "${1%-dark}"
+  echo "${1%-$2}"
 }
 
 function _set_night()
 {
-  if ( _is_dark "$1" ); then
+  if ( _is_dark "$1" "$2" ); then
     echo "$1"
   else
-    echo "$1-dark"
+    echo "$1-$2"
   fi
 }
 
@@ -114,10 +115,10 @@ if [ $? != 0 ]; then
 fi
 
 # GTK theme
-set_night_mode $mode xsettings /Net/ThemeName
+set_night_mode $mode xsettings /Net/ThemeName dark
 
 # Icon theme
-set_night_mode $mode xsettings /Net/IconThemeName
+set_night_mode $mode xsettings /Net/IconThemeName Dark
 
 # Window manager theme
 # set_night_mode $mode xfwm4 /general/theme
