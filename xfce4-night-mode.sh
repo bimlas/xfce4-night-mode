@@ -6,7 +6,7 @@
 
 function show_usage()
 {
-  progname=`basename "$0"`
+  progname="$(basename $0)"
   echo "$progname [night|day|toggle]"
   echo "Without parameters it will set dark theme from $SUNSET to $SUNRISE"
   echo 'Use `xfce4-settings-editor` -> `night-mode` to modify settings'
@@ -28,7 +28,7 @@ function parse_args()
 
 function _get_mode_by_time()
 {
-  now=`date +"%H%M"`
+  now="$(date '+%H%M')"
 
   if [ $now -ge "${SUNRISE/:/}" -a $now -le "${SUNSET/:/}" ]; then
     echo 'day'
@@ -37,64 +37,45 @@ function _get_mode_by_time()
   fi
 }
 
-function set_night_mode()
+
+#######################################
+# Set theme to requested theme if it is not already set
+# Globals:
+#   GTK_LIGHT
+#   GTK_DARK
+#   ICON_LIGHT
+#   ICON_DARK
+#   CURSOR_LIGHT
+#   CURSOR_DARK
+#   WM_LIGHT
+#   WM_DARK
+# Arguments:
+#   Channel: xfconf channel to change
+#   Property: property of that xfconf channel to change
+#   Variable name: global that contains the name of the requested theme
+# Outputs:
+#   None
+#######################################
+function set_theme()
 {
-  current_theme=`xfconf-query --channel $2 --property $3`
-  if ( _is_mode_already_set "$current_theme" "$1" ); then
+  current_theme="$(xfconf-query --channel $1 --property $2)"
+  declare -n target_theme="$3"
+
+  if [ "$current_theme" = "$target_theme" ]; then
     return
   fi
 
-  new_theme=`_set_$1 "$current_theme" 2> /dev/null`
+  xfconf-query --channel "$1" --property "$2" --set "$target_theme"
+
   if [ $? != 0 ]; then
     show_usage
     exit 1
-  fi
-
-  xfconf-query --channel $2 --property $3 --set "$new_theme"
-}
-
-function _is_mode_already_set()
-{
-  if ( _is_dark "$1" ) && [ "$2" = "night" ]; then
-    exit 0
-  fi
-  if ! ( _is_dark "$1" ) && [ "$2" = "day" ]; then
-    exit 0
-  fi
-  exit 1
-}
-
-function _set_toggle()
-{
-  if ( _is_dark "$1" ); then
-    _set_day "$1"
-  else
-    _set_night "$1"
-  fi
-}
-
-function _is_dark()
-{
-  echo "$1" | grep '\-dark$' > /dev/null
-}
-
-function _set_day()
-{
-  echo "${1%-dark}"
-}
-
-function _set_night()
-{
-  if ( _is_dark "$1" ); then
-    echo "$1"
-  else
-    echo "$1-dark"
   fi
 }
 
 function get_config()
 {
-  result=`xfconf-query --channel 'night-mode' --property "/$1" 2> /dev/null`
+  result="$(xfconf-query --channel 'night-mode' --property /$1 2> /dev/null)"
   if ! [ "$result" ]; then
     result="$3"
     xfconf-query --channel 'night-mode' --property "/$1" --set "$result" --create --type "$2"
@@ -103,24 +84,68 @@ function get_config()
   echo "$result"
 }
 
-TEXT=`get_config 'text' 'string' '<span size="xx-large">&#x262F;</span>'`
-SUNRISE=`get_config 'sunrise' 'string' '7:30'`
-SUNSET=`get_config 'sunset' 'string' '18:00'`
+function set_config()
+{
+  xfconf-query --channel 'night-mode' --property "/$1" --set "$3" --create --type "$2"
+}
 
-mode=`parse_args $@`
+TEXT="$(get_config 'text' 'string' '<span size="xx-large">&#x262F;</span>')"
+SUNRISE="$(get_config 'sunrise' 'string' '7:30')"
+SUNSET="$(get_config 'sunset' 'string' '18:00')"
+GTK_LIGHT="$(get_config 'Light/GtkTheme' 'string' $(xfconf-query --channel xsettings --property /Net/ThemeName))"
+GTK_DARK="$(get_config 'Dark/GtkTheme' 'string' $(xfconf-query --channel xsettings --property /Net/ThemeName))"
+ICON_LIGHT="$(get_config 'Light/IconTheme' 'string' $(xfconf-query --channel xsettings --property /Net/IconThemeName))"
+ICON_DARK="$(get_config 'Dark/IconTheme' 'string' $(xfconf-query --channel xsettings --property /Net/IconThemeName))"
+CURSOR_LIGHT="$(get_config 'Light/CursorTheme' 'string' $(xfconf-query --channel xsettings --property /Gtk/CursorThemeName))"
+CURSOR_DARK="$(get_config 'Dark/CursorTheme' 'string' $(xfconf-query --channel xsettings --property /Gtk/CursorThemeName))"
+WM_LIGHT="$(get_config 'Light/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
+WM_DARK="$(get_config 'Dark/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
+
+mode="$(parse_args $@)"
+
 if [ $? != 0 ]; then
   show_usage
   exit 1
 fi
 
+if [ "$mode" = "toggle" ]; then
+  current="$(get_config 'active' 'string' 'day')"
+  case "$current" in
+    day)
+      mode='night'
+      ;;
+    night)
+      mode='day'
+      ;;
+    *)
+      exit 1
+  esac
+fi
+
+case "$mode" in
+  day)
+    suffix='LIGHT'
+    ;;
+  night)
+    suffix='DARK'
+    ;;
+  *)
+    exit 1
+esac
+
 # GTK theme
-set_night_mode $mode xsettings /Net/ThemeName
+set_theme 'xsettings' '/Net/ThemeName' "GTK_$suffix"
 
 # Icon theme
-set_night_mode $mode xsettings /Net/IconThemeName
+set_theme 'xsettings' '/Net/IconThemeName' "ICON_$suffix"
+
+# Cursor theme
+set_theme 'xsettings' '/Gtk/CursorThemeName' "CURSOR_$suffix"
 
 # Window manager theme
-# set_night_mode $mode xfwm4 /general/theme
+set_theme 'xfwm4' '/general/theme' "WM_$suffix"
+
+set_config 'active' 'string' "$mode"
 
 echo "<txt>$TEXT</txt>"
 echo "<txtclick>$0 toggle</txtclick>"
@@ -128,4 +153,4 @@ echo "<tool>
   Night mode: $SUNSET - $SUNRISE
   Click to toggle mode for a while
   Use \`xfce4-settings-editor\` -> \`night-mode\` to modify settings
-  </tool>"
+</tool>"

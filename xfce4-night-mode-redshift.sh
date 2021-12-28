@@ -14,4 +14,4 @@ fi
 echo '<tool>
   Night mode defined by RedShift
   Click to toggle mode for a while
-  </tool>'
+</tool>'
