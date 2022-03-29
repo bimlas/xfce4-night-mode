@@ -62,3 +62,10 @@ For example, to use http://jonls.dk/redshift/[Redshift] or another program to
 determine when it is night, use `xfce4-night-mode-redshift.sh` (or a modified
 version of it) instad of `xfce4-night-mode.sh` in "Generic Monitor plugin
 usage".
+
+== Changes
+
+=== https://gitlab.com/bimlas/xfce4-night-mode/-/compare/v1.0.0...v2.0.0[2.0.0]
+
+* Add options to change GTK, mouse, icon, and window manager theme
+** *Breaking change*: You must set these before use
