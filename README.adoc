@@ -7,9 +7,7 @@ https://docs.xfce.org/panel-plugins/xfce4-genmon-plugin[Generic Monitor
 
 image::https://i.imgur.com/UVSz6QB.gif[]
 
-It is *important that both the color scheme and the icon theme have both light
-and dark variants*. For example, the Adwaita and Adwaita-dark GTK style and
-the Elementary and Elementary-dark icon theme are such.
+*It is important to set the desired color schemes before use* (see Settings).
 
 * https://gitlab.com/bimlas/xfce4-night-mode (main repository)
 * https://github.com/bimlas/xfce4-night-mode (mirror, *please star if you like the plugin*)
@@ -45,6 +43,18 @@ to the settings (see later).
 == Settings
 
 For settings, open the XFCE Settings Editor -> `night-mode` channel.
+
+To find out what values to enter, set the color schemes you want and copy them
+from the appropriate location:
+
+* GTK theme
+** `xsettings/Net/ThemeName`
+* Icon theme
+** `xsettings/Net/IconThemeName`
+* Cursor theme
+** `xsettings/Gtk/CursorThemeName`
+* Window manager theme
+** `xfwm4/general/theme`
 
 === Switch at a time specified by antoher program
 

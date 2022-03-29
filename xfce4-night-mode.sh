@@ -153,4 +153,12 @@ echo "<tool>
   Night mode: $SUNSET - $SUNRISE
   Click to toggle mode for a while
   Use \`xfce4-settings-editor\` -> \`night-mode\` to modify settings
+
+  To find out what values to enter, set the color schemes you want and copy
+  them from the appropriate location:
+
+  * GTK theme: \`xsettings/Net/ThemeName\`
+  * Icon theme: \`xsettings/Net/IconThemeName\`
+  * Cursor theme: \`xsettings/Gtk/CursorThemeName\`
+  * Window manager theme: \`xfwm4/general/theme\`
 </tool>"
