@@ -71,6 +71,11 @@ function set_theme()
     show_usage
     exit 1
   fi
+
+  if [ "$2" = "/Net/ThemeName" ]
+  then
+    gsettings set org.gnome.desktop.interface gtk-theme "$target_theme"
+  fi
 }
 
 function get_config()
