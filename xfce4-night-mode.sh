@@ -105,6 +105,8 @@ CURSOR_LIGHT="$(get_config 'Light/CursorTheme' 'string' $(xfconf-query --channel
 CURSOR_DARK="$(get_config 'Dark/CursorTheme' 'string' $(xfconf-query --channel xsettings --property /Gtk/CursorThemeName))"
 WM_LIGHT="$(get_config 'Light/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
 WM_DARK="$(get_config 'Dark/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
+PANELS_LIGHT="$(get_config 'Light/PanelsDarkMode' 'bool' $(xfconf-query --channel xfce4-panel --property /panels/dark-mode))"
+PANELS_DARK="$(get_config 'Dark/PanelsDarkMode' 'bool' $(xfconf-query --channel xfce4-panel --property /panels/dark-mode))"
 
 mode="$(parse_args $@)"
 
@@ -150,6 +152,9 @@ set_theme 'xsettings' '/Gtk/CursorThemeName' "CURSOR_$suffix"
 # Window manager theme
 set_theme 'xfwm4' '/general/theme' "WM_$suffix"
 
+# Panel
+set_theme 'xfce4-panel' '/panels/dark-mode' "PANELS_$suffix"
+
 set_config 'active' 'string' "$mode"
 
 echo "<txt>$TEXT</txt>"
@@ -166,4 +171,5 @@ echo "<tool>
   * Icon theme: \`xsettings/Net/IconThemeName\`
   * Cursor theme: \`xsettings/Gtk/CursorThemeName\`
   * Window manager theme: \`xfwm4/general/theme\`
+  * Panels dark-mode: \`xfce4-panel/panels/dark-mode\`
 </tool>"
