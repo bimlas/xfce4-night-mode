@@ -107,6 +107,8 @@ WM_LIGHT="$(get_config 'Light/WindowManagerTheme' 'string' $(xfconf-query --chan
 WM_DARK="$(get_config 'Dark/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
 PANELS_LIGHT="$(get_config 'Light/PanelsDarkMode' 'bool' $(xfconf-query --channel xfce4-panel --property /panels/dark-mode))"
 PANELS_DARK="$(get_config 'Dark/PanelsDarkMode' 'bool' $(xfconf-query --channel xfce4-panel --property /panels/dark-mode))"
+EXTRACMD_LIGHT="$(get_config 'Light/ExtraCmd' 'string')"
+EXTRACMD_DARK="$(get_config 'Dark/ExtraCmd' 'string')"
 
 mode="$(parse_args $@)"
 
@@ -154,6 +156,12 @@ set_theme 'xfwm4' '/general/theme' "WM_$suffix"
 
 # Panel
 set_theme 'xfce4-panel' '/panels/dark-mode' "PANELS_$suffix"
+
+# Extra command (i.e kvantummanager etc.)
+cmd="EXTRACMD_$suffix"
+if [ ! -z "${!cmd}" ]; then
+  eval "${!cmd}"
+fi
 
 set_config 'active' 'string' "$mode"
 
