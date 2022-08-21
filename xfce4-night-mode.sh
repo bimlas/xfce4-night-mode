@@ -105,6 +105,8 @@ CURSOR_LIGHT="$(get_config 'Light/CursorTheme' 'string' $(xfconf-query --channel
 CURSOR_DARK="$(get_config 'Dark/CursorTheme' 'string' $(xfconf-query --channel xsettings --property /Gtk/CursorThemeName))"
 WM_LIGHT="$(get_config 'Light/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
 WM_DARK="$(get_config 'Dark/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
+EXTRACMD_LIGHT="$(get_config 'Light/ExtraCmd' 'string')"
+EXTRACMD_DARK="$(get_config 'Dark/ExtraCmd' 'string')"
 
 mode="$(parse_args $@)"
 
@@ -149,6 +151,12 @@ set_theme 'xsettings' '/Gtk/CursorThemeName' "CURSOR_$suffix"
 
 # Window manager theme
 set_theme 'xfwm4' '/general/theme' "WM_$suffix"
+
+# Extra command (i.e kvantummanager etc.)
+cmd="EXTRACMD_$suffix"
+if [ ! -z "${!cmd}" ]; then
+  eval "${!cmd}"
+fi
 
 set_config 'active' 'string' "$mode"
 
