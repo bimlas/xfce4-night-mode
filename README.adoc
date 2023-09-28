@@ -56,6 +56,43 @@ from the appropriate location:
 * Window manager theme
 ** `xfwm4/general/theme`
 
+The specified `UserScript` will be executed when switching the mode, you can use
+this for example to change the theme of the terminal, set desktop wallpaper,
+etc. You can use the variable `XFCE_NIGHT_MODE` in your script if you want to
+use the same script in both cases, for example:
+
+....
+#!/bin/bash
+notify-send --icon "dialog-info" "Mode: $XFCE_NIGHT_MODE"
+....
+
+=== Example `UserScript`
+
+==== Change wallpaper
+
+First you have to find the property of the wallpaper (this could be different on
+multi-monitor setup) by executing the command below then changing the wallpaper
+in _Desktop_ setting.
+
+```
+xfconf-query --channel xfce4-desktop --monitor
+```
+
+You have to execute the command below to set up the wallpaper for this desktop.
+
+```
+xfconf-query --channel xfce4-desktop --property <property> --set </path/to/image.jpg>
+```
+
+==== Change panel dark mode
+
+You have to execute the command below to change the panel mode opposite to the
+windows mode (light windows, dark panel).
+
+```
+xfconf-query --channel xfce4-panel --property /panels/dark-mode --set "$([ "$XFCE_NIGHT_MODE" = "day" ] && echo true || echo false)"
+```
+
 === Switch at a time specified by antoher program
 
 For example, to use http://jonls.dk/redshift/[Redshift] or another program to

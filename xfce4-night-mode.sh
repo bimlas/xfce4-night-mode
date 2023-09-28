@@ -105,6 +105,8 @@ CURSOR_LIGHT="$(get_config 'Light/CursorTheme' 'string' $(xfconf-query --channel
 CURSOR_DARK="$(get_config 'Dark/CursorTheme' 'string' $(xfconf-query --channel xsettings --property /Gtk/CursorThemeName))"
 WM_LIGHT="$(get_config 'Light/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
 WM_DARK="$(get_config 'Dark/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
+USERSCRIPT_LIGHT="$(get_config 'Light/UserScript' 'string')"
+USERSCRIPT_DARK="$(get_config 'Dark/UserScript' 'string')"
 
 mode="$(parse_args $@)"
 
@@ -151,6 +153,12 @@ set_theme 'xsettings' '/Gtk/CursorThemeName' "CURSOR_$suffix"
 set_theme 'xfwm4' '/general/theme' "WM_$suffix"
 
 set_config 'active' 'string' "$mode"
+
+# Execute user script to change wallpaper, terminal theme, etc.
+userscript="USERSCRIPT_$suffix"
+if [ ! -z "${!userscript}" ]; then
+  XFCE_NIGHT_MODE="$mode" eval "${!userscript}" 2>&1 > /dev/null
+fi
 
 echo "<txt>$TEXT</txt>"
 echo "<txtclick>$0 toggle</txtclick>"
