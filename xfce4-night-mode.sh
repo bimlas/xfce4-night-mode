@@ -76,6 +76,14 @@ function set_theme()
   then
     gsettings set org.gnome.desktop.interface gtk-theme "$target_theme"
   fi
+  if [ "$2" = "/Net/IconThemeName" ]
+  then
+    gsettings set org.gnome.desktop.interface icon-theme "$target_theme"
+  fi
+  if [ "$2" = "/Gtk/CursorThemeName" ]
+  then
+    gsettings set org.gnome.desktop.interface cursor-theme "$target_theme"
+  fi
 }
 
 function get_config()
