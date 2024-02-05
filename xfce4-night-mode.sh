@@ -1,8 +1,7 @@
 #!/bin/bash
 # XFCE Night Mode: Switch between light and dark variants of a theme
 #
-# https://gitlab.com/bimlas/xfce4-night-mode (main repository)
-# https://github.com/bimlas/xfce4-night-mode (mirror, please star if you like the plugin)
+# https://github.com/bimlas/xfce4-night-mode (please star if you like the plugin)
 
 function show_usage()
 {

@@ -9,8 +9,7 @@ image::https://i.imgur.com/UVSz6QB.gif[]
 
 *It is important to set the desired color schemes before use* (see Settings).
 
-* https://gitlab.com/bimlas/xfce4-night-mode (main repository)
-* https://github.com/bimlas/xfce4-night-mode (mirror, *please star if you like the plugin*)
+* https://github.com/bimlas/xfce4-night-mode (*please star if you like the plugin*)
 
 == Command line usage
 
@@ -102,7 +101,7 @@ usage".
 
 == Changes
 
-=== https://gitlab.com/bimlas/xfce4-night-mode/-/compare/v1.0.0\...v2.0.0[2.0.0]
+=== https://github.com/bimlas/xfce4-night-mode/-/compare/v1.0.0\...v2.0.0[2.0.0]
 
 * Add options to change GTK, mouse, icon, and window manager theme
 ** *Breaking change*: You must set these before use
