@@ -158,7 +158,6 @@ set_config 'active' 'string' "$mode"
 # Panel toggle
 set_theme 'xfce4-panel' '/panels/dark-mode' "PANEL_$suffix"
 
-
 # Execute user script to change wallpaper, terminal theme, etc.
 userscript="USERSCRIPT_$suffix"
 if [ ! -z "${!userscript}" ]; then
