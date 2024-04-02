@@ -104,8 +104,8 @@ CURSOR_LIGHT="$(get_config 'Light/CursorTheme' 'string' $(xfconf-query --channel
 CURSOR_DARK="$(get_config 'Dark/CursorTheme' 'string' $(xfconf-query --channel xsettings --property /Gtk/CursorThemeName))"
 WM_LIGHT="$(get_config 'Light/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
 WM_DARK="$(get_config 'Dark/WindowManagerTheme' 'string' $(xfconf-query --channel xfwm4 --property /general/theme))"
-PANEL_LIGHT="$(get_config 'Light/Panel' 'bool' $(xfconf-query --channel xfce4-panel --property /panels/dark-mode))"
-PANEL_DARK="$(get_config 'Dark/Panel' 'bool' $(xfconf-query --channel xfce4-panel --property /panels/dark-mode))"
+PANEL_LIGHT="$(get_config 'Light/Panel' 'bool' false)"
+PANEL_DARK="$(get_config 'Dark/Panel' 'bool' true)"
 USERSCRIPT_LIGHT="$(get_config 'Light/UserScript' 'string')"
 USERSCRIPT_DARK="$(get_config 'Dark/UserScript' 'string')"
 
