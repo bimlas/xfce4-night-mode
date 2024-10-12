@@ -159,6 +159,18 @@ if [ ! -z "${!userscript}" ]; then
   XFCE_NIGHT_MODE="$mode" eval "${!userscript}" 2>&1 > /dev/null
 fi
 
+# Trigger also 'color-scheme' preference
+case "$mode" in
+  day)
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+    ;;
+  night)
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    ;;
+  *)
+    exit 1
+esac
+
 echo "<txt>$TEXT</txt>"
 echo "<txtclick>$0 toggle</txtclick>"
 echo "<tool>
