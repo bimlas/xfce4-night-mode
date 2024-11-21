@@ -75,6 +75,14 @@ function set_theme()
   then
     gsettings set org.gnome.desktop.interface gtk-theme "$target_theme"
   fi
+  if [ "$2" = "/Net/IconThemeName" ]
+  then
+    gsettings set org.gnome.desktop.interface icon-theme "$target_theme"
+  fi
+  if [ "$2" = "/Gtk/CursorThemeName" ]
+  then
+    gsettings set org.gnome.desktop.interface cursor-theme "$target_theme"
+  fi
 }
 
 function get_config()
@@ -150,6 +158,35 @@ set_theme 'xsettings' '/Gtk/CursorThemeName' "CURSOR_$suffix"
 
 # Window manager theme
 set_theme 'xfwm4' '/general/theme' "WM_$suffix"
+
+# apply settings to QT theme (using Kvantum Manager and qt5ct/qt6ct configs)
+if type kvantummanager > /dev/null 2>&1; then
+  # gtk theme applied at the moment
+  gtk_theme=$(gsettings get org.gnome.desktop.interface gtk-theme)
+  # no Arc-Lighter (only KvArc) for Kvantum Manager, so apply filter
+  filter="Lighter"
+  # remove "-"" and "'" since themes are named like KvArc, KvArcDark, KvAdapta
+  qt_theme=$(echo "$gtk_theme" | tr -d "-" | tr -d "'" | sed "s/$filter//g")
+  # apply theme
+  kvantummanager --set Kv"$qt_theme"
+  
+  # gtk icon theme applied at the moment, also filter out single quotes
+  icon_theme=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
+  # qt5ct and qt6ct config file paths
+  qt5ct_conf="$HOME/.config/qt5ct/qt5ct.conf"
+  qt6ct_conf="$HOME/.config/qt6ct/qt6ct.conf"
+  # parameter to look for on config files (no CLI at the moment)
+  param="icon_theme="
+  # parameter replacement
+  replacement="icon_theme=$icon_theme"
+  # change QT icon theme (if qt5ct and qt6ct config files exist)
+  if [ -e "$qt5ct_conf" ]; then
+      sed -i "/$param/c\\$replacement" "$qt5ct_conf"
+  fi
+  if [ -e "$qt6ct_conf" ]; then
+      sed -i "/$param/c\\$replacement" "$qt6ct_conf"
+  fi
+fi
 
 set_config 'active' 'string' "$mode"
 
